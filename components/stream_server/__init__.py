@@ -17,7 +17,6 @@ import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import uart
 from esphome.const import CONF_ID, CONF_PORT
-from esphome.util import parse_esphome_version
 
 # ESPHome doesn't know the Stream abstraction yet, so hardcode to use a UART for now.
 
@@ -49,9 +48,9 @@ def to_code(config):
 	yield cg.register_component(var, config)
 	yield uart.register_uart_device(var, config)
 
-esphome_version = parse_esphome_version()
+esphome_version = cv.Version.parse(cv.ESPHOME_VERSION)
 
-	# Request UART to wake the main loop when data arrives for low-latency processing
+# Request UART to wake the main loop when data arrives for low-latency processing
 # Apply the fix only for versions 2025.12.x through 2026.2.x
-if (2025, 12, 0) <= esphome_version < (2026, 3, 0):
+if cv.Version(2025, 12, 0) <= esphome_version < cv.Version(2026, 3, 0):
     uart.request_wake_loop_on_rx()
